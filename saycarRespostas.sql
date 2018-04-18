@@ -34,11 +34,15 @@ sessoes.usuario = usuarios.id
 order by sessoes.aluno, sessoes.questionario, sessoes.entrada;
 
 create view consultaEntradas as 
-select distinct questionario.aluno, questionario.nome, questionario.entrada,consultasessoes.data, consultasessoes.usuario, consultasessoes.nome as nomeUsuario  from questionario inner join consultasessoes on 
+select distinct questionario.aluno, questionario.nome, questionario.entrada as EntradaDoJeitoQueEstaNoBanco,
+IF(questionario.entrada = 1 or questionario.entrada = 3 , "1",
+	IF(questionario.entrada = 2 or questionario.entrada = 4,"2","Entrada Inválida")
+) as EntradaDoJeitoQueEstaNoSistema
+,consultasessoes.data, consultasessoes.usuario, consultasessoes.nome as nomeUsuario  from questionario inner join consultasessoes on 
 questionario.aluno = consultasessoes.aluno and 
 questionario.entrada = consultasessoes.entrada and 
 questionario.questionario = consultasessoes.questionario
-order by questionario.aluno, questionario.nome, questionario.entrada;
+order by questionario.aluno, questionario.nome, EntradaDoJeitoQueEstaNoSistema;
 
 
 create view consultaEntradas2 as 
