@@ -50,11 +50,26 @@ questionario.entrada = consultasessoes.entrada and
 questionario.questionario = consultasessoes.questionario
 order by questionario.aluno, questionario.nome, questionario.entrada;
 
- select count(*) as numeroEntradas2017 from consultaEntradas2 where consultaEntradas2.data like "2017%";
- select count(*) as numeroSessoes2017 from sessoes  where sessoes.data like "2017%";
+
+CREATE TEMPORARY TABLE dadosGerais (
+numeroEntradas2017 varchar(100),
+numeroSessoes2017 varchar(100),
+numeroEntradas2018 varchar(100),
+numeroSessoes2018 varchar(100),
+numeroRespostas varchar(100),
+numeroSessoes varchar(100)
+)
+
+select count(*) as numeroEntradas2017 from consultaEntradas2 where consultaEntradas2.data like "2017%";
+select count(*) as numeroSessoes2017 from sessoes  where sessoes.data like "2017%";
+select count(*) as numeroEntradas2018 from consultaEntradas2 where consultaEntradas2.data like "2018%";
+select count(*) as numeroSessoes2018 from sessoes  where sessoes.data like "2018%";
+select count(*) as numeroRespostas from respostas;
+select count(*) as numeroSessoes from sessoes;
+ 
 
 DELIMITER $$
-CREATE PROCEDURE atualizaEntradas ()
+CREATE PROCEDURE deletaDados2017 ()
 BEGIN
 declare aluno, nome, idQuestionario, entrada, idPergunta, ordem, data , usuario , nomeUsuario varchar(255);
 declare finished int;
@@ -81,7 +96,9 @@ DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
                                  delete from sessoes where
                                  sessoes.aluno = aluno and
                                  sessoes.entrada = entrada and 
-                                 sessoes.questionario = questionario;
+                                 sessoes.questionario = questionario and 
+                                 sessoes.data = data;
+                                 
                                                         					 
                              end if;
 				 END LOOP get_linhasEntradas;
@@ -93,7 +110,7 @@ DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = 1;
 END$$;
 DELIMITER ;
 
-CALL atualizaEntradas ();
+CALL deletaDados2017();
 
 SELECT COUNT( * ) 
 FROM consultaEntradas2
